@@ -62,7 +62,7 @@
 
 <svg id="draft"></svg>
 <div id="panel">        
-    <div class="groupButtons">
+    <div class="groupButtons"> <!-- buttons -->
         <span class="rbtWorkShelf" id="addHShelf">H</span>
         <span class="rbtWorkShelf" id="addVShelf">V</span>
         <span class="rbtWorkShelf" id="delShelf">D</span>
@@ -77,6 +77,6 @@
 <script src="js/furniture_design.js"></script>
 
 <script>    
-    var fd=new CFurnitureDesign();
+    var fd=new CFurnitureDesign(); //design-controller !!!
     var main=new CMain; //main-controller
 </script>
