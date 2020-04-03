@@ -78,5 +78,5 @@
 
 <script>    
     var fd=new CFurnitureDesign();
-    var main=new CMain;
+    var main=new CMain; //main-controller
 </script>
