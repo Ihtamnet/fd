@@ -77,6 +77,6 @@
 <script src="js/furniture_design.js"></script>
 
 <script>    
-    var fd=new CFurnitureDesign(); //design-controller !!!
-    var main=new CMain; //main-controller ???
+    var fd=new CFurnitureDesign(); //design-controller
+    var main=new CMain; //main-controller
 </script>
