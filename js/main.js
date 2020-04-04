@@ -128,6 +128,7 @@ var CMain=function(){
         console.log("add v shelf: ", data);
     };
     
+    //додавання горизонтальної полиці
     var addHShelf=function(data){
         
         data.width=300; //тут буде алгоритм обчислення
