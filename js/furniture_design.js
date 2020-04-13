@@ -47,8 +47,8 @@ var CFurnitureDesign=function(){
             frameDraft=new CFrameDraft({
                 containerId: idDC,
                 svg    : svg,
-                width  : 450,
-                height : 300,
+                width  : 550,
+                height : 350,
                 scale  : scale
             });
         }catch(err){

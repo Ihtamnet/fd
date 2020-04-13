@@ -70,7 +70,7 @@
 </div>
 
 <script src="js/main.js"></script>
-<script src="js/dr2d.js"></script>
+<!--<script src="js/dr2d.js"></script>-->
 <script src="js/svg.js"></script>
 <script src="js/frame_draft.js"></script>
 <script src="js/shelf.js"></script>
