@@ -27,6 +27,7 @@ var CFrameDraft=function(prm){
             containerId=prm.containerId;
             
             console.log("w, h: ", width, height);
+            console.log(prm);
             
             AddToDraft();
         }catch (err){

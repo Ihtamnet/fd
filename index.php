@@ -69,12 +69,12 @@
     </div>
 </div>
 
-<script src="js/main.js"></script>
-<!--<script src="js/dr2d.js"></script>-->
-<script src="js/svg.js"></script>
-<script src="js/frame_draft.js"></script>
-<script src="js/shelf.js"></script>
-<script src="js/furniture_design.js"></script>
+<script src="js/main.js?time=<?php echo time(); ?>"></script>
+<script src="js/dr2d.js?time=<?php echo time(); ?>"></script>
+<script src="js/svg.js?time=<?php echo time(); ?>"></script>
+<script src="js/frame_draft.js?time=<?php echo time(); ?>"></script>
+<script src="js/shelf.js?time=<?php echo time(); ?>"></script>
+<script src="js/furniture_design.js?time=<?php echo time(); ?>"></script>
 
 <script>    
     var fd=new CFurnitureDesign(); //design-controller 
