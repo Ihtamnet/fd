@@ -70,7 +70,7 @@
 </div>
 
 <script src="js/main.js?time=<?php echo time(); ?>"></script>
-<script src="js/dr2d.js?time=<?php echo time(); ?>"></script>
+<script src="js/gr2d.js?time=<?php echo time(); ?>"></script>
 <script src="js/svg.js?time=<?php echo time(); ?>"></script>
 <script src="js/frame_draft.js?time=<?php echo time(); ?>"></script>
 <script src="js/shelf.js?time=<?php echo time(); ?>"></script>

@@ -26,6 +26,7 @@ var CFrameDraft=function(prm){
             scale=prm.scale;
             containerId=prm.containerId;
             
+            //
             console.log("w, h: ", width, height);
             console.log(prm);
             
@@ -52,6 +53,43 @@ var CFrameDraft=function(prm){
                 stroke_width: 1,
                 stroke_dasharray: "5, 5"                
             });
+            
+            //стрілка лінійного розміру довжини
+            svg.AddArrow({
+                containerId: containerId,
+                id: "dfArrowBottom",
+                double: true,
+                A: {
+                    x: x,
+                    y: y+height
+                },
+                B: {
+                    x: x+width,
+                    y: y+height
+                },
+                pendant: 30,
+                label: width,
+                alignLabel: "center"
+            });
+                        
+            //стрілка лінійного розміру висоти
+            svg.AddArrow({
+                containerId: containerId,
+                id: "dfArrowLeft",
+                double: true,
+                A: {
+                    x: x,
+                    y: y
+                },
+                B: {
+                    x: x,
+                    y: y+height
+                },
+                pendant: 30,
+                label: width,
+                alignLabel: "center"
+            });
+            
         }catch(err){
             console.log(err);
         }
