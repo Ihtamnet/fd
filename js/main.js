@@ -5,7 +5,12 @@ var CMain=function(){
     
     var self=this;
     
-    var objDraft=null;
+    var objDraft=null;      //DOM-об*єкт контейнера креслення
+    var objFrameDraft=null; //DOM-об*єкт рамки лінійних розмірів креслення
+    
+    //прапор розташувння курсора миші в межах рамки лінійних розмірів креслення
+    var mouseIsFrameDraft=false;
+    self.GetMouseIsFrameDraft=function(){ return mouseIsFrameDraft; };
     
     const halfThickShelfPX=fd.GetHalfThickShelfPX(); //отримати половину товщини полиці у px
     
@@ -24,16 +29,23 @@ var CMain=function(){
         objDraft.onclick=function(ev){ClickOnDraft(ev);};
         objDraft.onmousemove=function(ev){MoveOnDraft(ev);};
         
+        //створити обробники подій для курсора миші в межах рамки лінійних розмірів креслення
+        objFrameDraft=document.getElementById("frameDraft");
+        objFrameDraft.onmouseover=function(ev){mouseIsFrameDraft=true;};
+        objFrameDraft.onmouseout=function(ev){mouseIsFrameDraft=false;};
+        
         //створти обробники подій для кнопок вибору режиму вставки полиць (вертикальна чи горизонтальна)
         self.CreateEventsForElements({onclick: "ClickBtnWorkShelf"}, ".rbtWorkShelf");               
     };
     
     //установка курсора у залежності від режиму роботи
     var SetCursor=function(){        
-        if (action !== ""){
+        var cursor="default";
+        if (action !== "" && mouseIsFrameDraft){
             self.cursor=pathCursors+action+".cur";
-            objDraft.style.cursor="url("+pathCursors+action+".cur), auto";
-        }        
+            cursor="url("+pathCursors+action+".cur), auto";            
+        }      
+        objDraft.style.cursor=cursor;
     };
     
     //створити обробники подій events над елементами обраними за селектором selector_elements
@@ -60,7 +72,7 @@ var CMain=function(){
     };
     
     //клік в області креслення
-    var ClickOnDraft=function(ev){ console.log(ev);                
+    var ClickOnDraft=function(ev){ console.log(ev);               
         var dataMouse={
             x     : ev.offsetX,
             y     : ev.offsetY,

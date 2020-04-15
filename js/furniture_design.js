@@ -4,7 +4,7 @@
 var CFurnitureDesign=function(){
     var self=this;
     
-    var scale=100; //масштаб: кількість пікселів в одному метрі
+    var scale=120; //масштаб: кількість пікселів в одному метрі
     const thickShelf=18; //товщина полиці в мм
     const halfThickShelf=thickShelf/2;
     self.GetHalfThickShelfPX=function(){return parseInt(halfThickShelf/scale);};
@@ -63,7 +63,7 @@ var CFurnitureDesign=function(){
                 width  : 5,
                 height : 3,
                 scale  : scale
-            });
+            });                      
         }catch(err){
             console.log(err);
         }
@@ -112,7 +112,7 @@ var CFurnitureDesign=function(){
     
     //створення/перестворення усіх обробників подій для зображень об*єктів полиць
     var ReCreateEventsForShelfs=function(){
-        shelfsViewsObjs=document.querySelectorAll("[id^='id_shelf_']");
+        shelfsViewsObjs=document.querySelectorAll("[id^='id_shelf_']"); //console.log(shelfsViewsObjs);
         var l=shelfsViewsObjs.length;
         for(var i=0; i<l; i++){            
             shelfsViewsObjs[i].onmousemove=function(ev){ self.OnMouseMoveShelf(ev); };

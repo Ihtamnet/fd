@@ -151,7 +151,7 @@ var CSvg=function(prm){
             SetExternalPrm(prm);
         
             //*
-            element="<rect id='"+prm.selfId+"' x='"+prm.x+um+"' y='"+prm.y+um+
+            element="<rect id='"+prm.id+"' x='"+prm.x+um+"' y='"+prm.y+um+
                     "' width='"+prm.width+um+"' height='"+prm.height+um+"' "+
                     "style='stroke:"+stroke_+";stroke-width:"+stroke_width_+"; "+
                     "stroke-dasharray: "+stroke_dasharray_+";"+

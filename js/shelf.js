@@ -63,7 +63,7 @@ var CShelf=function(prm){
             var svg=prm.svg;                                    
             svg.AddRect({
                 containerId: prm.containerId,
-                selfId: prm.selfId,
+                id: prm.selfId,
 
                 x: start.x,
                 y: start.y,
