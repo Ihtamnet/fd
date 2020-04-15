@@ -59,6 +59,18 @@ var CSvg=function(prm){
         stroke_dasharray_=stroke_dasharray;
     };
     
+    //якщо об*єкт prm не має властивості name і визначений деякий параметр value,
+    //то створити у ньому цю властивість і надати їй значення value
+    //та повернути prm[name] у точку виклику
+    var SetPrm=function(prm, name, value){        
+        if (typeof prm === "object"){
+            if (typeof prm[name] === "undefined" && typeof value !== "undefined")
+                prm[name]=value;                            
+        }           
+        
+        return prm[name];
+    };
+    
     //призначити локальним параметрам ГП значення із зовнішнього об*єкту prm
     var SetExternalPrm=function(prm){ 
         if (typeof prm.stroke !== "undefined")
@@ -125,23 +137,25 @@ var CSvg=function(prm){
         return result;
     };
     
-    //ФУНКЦІЇ ГЕНЕРУВАННЯ HTML-РОЗМІТКИ ГРАФІЧНИХ ПРИМІТИВІІ
+    //ФУНКЦІЇ ГЕНЕРУВАННЯ HTML-РОЗМІТКИ ГРАФІЧНИХ ПРИМІТИВІВ
     
     //прямокутник
     self.AddRect=function(prm){                        
+               
+        var add=SetPrm(prm, "add", true);
         
-        var result=1;
+        var element="none";
                                                         
         try{
         
             SetExternalPrm(prm);
         
             //*
-            var element="<rect id='"+prm.selfId+"' x='"+prm.x+um+"' y='"+prm.y+um+
-                        "' width='"+prm.width+um+"' height='"+prm.height+um+"' "+
-                        "style='stroke:"+stroke_+";stroke-width:"+stroke_width_+"; "+
-                        "stroke-dasharray: "+stroke_dasharray_+";"+
-                        "fill: "+fill_+"; fill-opacity: "+fill_opacity_+";'></rect>";
+            element="<rect id='"+prm.selfId+"' x='"+prm.x+um+"' y='"+prm.y+um+
+                    "' width='"+prm.width+um+"' height='"+prm.height+um+"' "+
+                    "style='stroke:"+stroke_+";stroke-width:"+stroke_width_+"; "+
+                    "stroke-dasharray: "+stroke_dasharray_+";"+
+                    "fill: "+fill_+"; fill-opacity: "+fill_opacity_+";'></rect>";
             //*/          
               
             /*
@@ -159,16 +173,16 @@ var CSvg=function(prm){
             };
             //*/
             
-            AddElement(prm.containerId, element);
+            if (add)
+                AddElement(prm.containerId, element);
         } catch ( err ){
-            result=0;
+            element="none";
             console.log(err);
         }            
         
-        return result;
+        return element;
     };
-    
-    //стрілка
+        
     //стрілка
     self.AddArrow=function(prm){
         try{            
@@ -176,8 +190,10 @@ var CSvg=function(prm){
             var A={x: 30, y: 200};
             var B={x: 200, y: 30};
             var h=20;
-            var w=15;
+            var w=10;
             var id="idArrow_"+Math.random(1000);
+            
+            var add=SetPrm(prm, "add", true);
             
             SetLocalPrm();
                         
@@ -300,7 +316,8 @@ var CSvg=function(prm){
             }
             element+="</g>";
             
-            AddElement(prm.containerId, element);
+            if (add)
+                AddElement(prm.containerId, element);
             
         } catch (err){
             console.log(err);
@@ -309,7 +326,83 @@ var CSvg=function(prm){
         return element;
     };        
     
+    //додавання мітки масштабу креслення
+    self.AddLabelScale=function(prm){ //alert(ObjToString(prm));                       
+        var x=SetPrm(prm, "x", 15);
+        var y=SetPrm(prm, "y", 100);          //
+        var lengthOrt=SetPrm(prm, "lengthOrt", 20);   //
+        var height=SetPrm(prm, "height", 5);       //
+        var cScale=SetPrm(prm, "cScale", 25);       //
+        var ov=SetPrm(prm, "ov", "m");         //
+        
+        //
+        var showOV=SetPrm(prm, "showOV", true);    //
+        var showScale=SetPrm(prm, "showScale", true); //
+        
+        //
+        //var pairStyle="";      //
+        var oddStyle=SetPrm(prm, "oddStyle", "stroke: black;");       //
+        var strokeBorder=SetPrm(prm, "strokeBorder", "grey");             //    
+        var classLabelScale=SetPrm(prm, "classLabelScale", "");              //
+        var styleLabelScale=SetPrm(prm, "styleLabelScale", "font-weight: bold; font-size: 8pt; stroke-width: 1;");            
+                
+        var pairStyle=SetPrm(prm, "pairStyle", "stroke: white;");
+        
+        var add=SetPrm(prm, "add", true);
+        
+        pairStyle="style='"+pairStyle+"'";
+        oddStyle="style='"+oddStyle+"'";    
+        if (classLabelScale)
+            classLabelScale="class='"+classLabelScale+"'";
+        if (styleLabelScale)
+            styleLabelScale="style='"+styleLabelScale+"'";
+        
+        var id="id='"+SetPrm(prm, "id", "idLabelScale")+"'";                        
+                
+        var oldX=x;
+        var x2;
+        var element="<g "+id+">";
+        var curStyle="";      
+        var tY=y+height+7;
+        var num=0;
+        var dNum=1/cScale;
+        for(var i=1; i<=cScale; i++, num+=dNum){
+            if (i%2===0)
+                curStyle=pairStyle;
+            else
+                curStyle=oddStyle;
+            x2=x+lengthOrt;            
+            element+="<line x1="+x+" y1="+y+" x2="+x2+" y2="+y+" "+curStyle+" stroke-width="+height+"></line>";
+            x-=3;
+            if (showScale){                  
+                element+="<text x="+x+" y="+tY+" "+classLabelScale+" "+styleLabelScale+">"+num.toFixed(2)+"</text>";
+            }
+            
+            x=x2;
+        }
+        x-=3;
+        if (showScale){                               
+            element+="<text x="+x+" y="+tY+" "+classLabelScale+" "+styleLabelScale+">"+num+"</text>";
+        }
+        if (showOV){
+            x+=10;
+            element+="<text x="+x+" y="+tY+" "+classLabelScale+" "+styleLabelScale+">("+ov+")</text>";
+        }
+        element+=self.AddRect({
+            add: false,
+            x: oldX, y: y-height/2, 
+            width: lengthOrt*cScale, height: height,
+            stroke: strokeBorder,
+            fill_opacity: 0
+        });
+        element+="</g>";                        
+        
+        if (add)
+            AddElement(prm.containerId, element);
+               
+        return element;
+    };
     
-    
+    //
     __constructor(prm);
 } ;

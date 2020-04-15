@@ -4,10 +4,22 @@
 var CFurnitureDesign=function(){
     var self=this;
     
-    var scale=5; //масштаб: кількість мм в одному пікселі
-    const thickShelf=6; //товщина полиці в мм
+    var scale=100; //масштаб: кількість пікселів в одному метрі
+    const thickShelf=18; //товщина полиці в мм
     const halfThickShelf=thickShelf/2;
     self.GetHalfThickShelfPX=function(){return parseInt(halfThickShelf/scale);};
+    
+    //переведення кількості пікселів у метри
+    self.PixelsToMt=function(p){
+        if (typeof p !== "number" || Math.abs(p) < 0.001)
+            p=0.001;
+        return (p/scale).toFixed(3);
+    };
+    
+    //переведення метрів у пікселі
+    self.MtToPixels=function(m){
+        return parseInt(m*scale)+1;
+    };
     
     //список усіх полиць - модель
     var idxShelfs=0;
@@ -45,10 +57,11 @@ var CFurnitureDesign=function(){
             idDC=prm.idDC;
             svg=new CSvg;
             frameDraft=new CFrameDraft({
+                parent: self,
                 containerId: idDC,
                 svg    : svg,
-                width  : 550,
-                height : 350,
+                width  : 5,
+                height : 3,
                 scale  : scale
             });
         }catch(err){
@@ -195,7 +208,7 @@ var CFurnitureDesign=function(){
     
     //додавання полиці
     self.addShelf=function(prm){ 
-        prm.thick=thickShelf;
+        prm.thick= self.MtToPixels(thickShelf/1000);
         var shelf=new CShelf(prm); 
         var id="id_shelf_"+idxShelfs;
         shelf.AddToDraft({
