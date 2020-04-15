@@ -20,6 +20,28 @@ var CFrameDraft=function(prm){
     
     var containerId=""; //Id контейнера у якому зображатиметься рамка
     
+    //параметри позиціонування рамки лінійних розмірів креслення
+    var posFrameDraft={ 
+        x:      0,
+        y:      0,
+        width:  0,
+        height: 0
+    };
+    self.GetPosFrameDraft=function(){
+        var objFrameDraft=document.getElementById("frameDraft");
+        posFrameDraft={
+            x:      parseInt(objFrameDraft.getAttribute("x")),
+            y:      parseInt(objFrameDraft.getAttribute("y")),
+            width:  parseInt(objFrameDraft.getAttribute("width")),
+            height: parseInt(objFrameDraft.getAttribute("height"))
+        };
+
+        //!!!
+        console.log("posFrameDraft: ", posFrameDraft);
+        
+        return posFrameDraft;
+    };
+    
     var __constructor=function(prm){                
         try{
             svg=prm.svg;

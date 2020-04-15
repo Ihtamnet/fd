@@ -7,7 +7,11 @@ var CFurnitureDesign=function(){
     var scale=120; //масштаб: кількість пікселів в одному метрі
     const thickShelf=18; //товщина полиці в мм
     const halfThickShelf=thickShelf/2;
-    self.GetHalfThickShelfPX=function(){return parseInt(halfThickShelf/scale);};
+    var halfThickShelfPX=5;
+    self.GetHalfThickShelfPX=function(){
+        halfThickShelfPX=parseInt(halfThickShelf/scale);
+        return halfThickShelfPX;        
+    };
     
     //переведення кількості пікселів у метри
     self.PixelsToMt=function(p){
@@ -20,6 +24,9 @@ var CFurnitureDesign=function(){
     self.MtToPixels=function(m){
         return parseInt(m*scale)+1;
     };
+    
+    var posFrameDraft={}; //параметри позиціонування рамки лінійних розмірів креслення
+    ;
     
     //список усіх полиць - модель
     var idxShelfs=0;
@@ -63,7 +70,9 @@ var CFurnitureDesign=function(){
                 width  : 5,
                 height : 3,
                 scale  : scale
-            });                      
+            });  
+            
+            posFrameDraft=frameDraft.GetPosFrameDraft();
         }catch(err){
             console.log(err);
         }
@@ -206,9 +215,37 @@ var CFurnitureDesign=function(){
                 
     };
     
+    //обчислення висоти вертикальної полиці
+    self.CalcHVShelf=function(data){       
+        data.x-=parseInt(halfThickShelfPX);
+                        
+        var yt=posFrameDraft.y;
+        var yb=yt+posFrameDraft.height;
+        
+        //алгоритм уточнення yt, yb
+        //...
+        
+        data.y=yt;
+        data.width=yb-yt;         
+    };
+    
+    //обчислення ширини горизонтальної полиці
+    self.CalcWHShelf=function(data){
+        data.y-=parseInt(halfThickShelfPX);
+        
+        var xl=posFrameDraft.x;
+        var xr=xl+posFrameDraft.width;
+        
+        //алгоритм уточнення xl, xr
+        //...
+        
+        data.x=xl;
+        data.width=xr-xl;        
+    };
+    
     //додавання полиці
     self.addShelf=function(prm){ 
-        prm.thick= self.MtToPixels(thickShelf/1000);
+        prm.thick=self.MtToPixels(thickShelf/1000);
         var shelf=new CShelf(prm); 
         var id="id_shelf_"+idxShelfs;
         shelf.AddToDraft({

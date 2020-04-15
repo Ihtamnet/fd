@@ -6,7 +6,9 @@ var CMain=function(){
     var self=this;
     
     var objDraft=null;      //DOM-об*єкт контейнера креслення
+    
     var objFrameDraft=null; //DOM-об*єкт рамки лінійних розмірів креслення
+    
     
     //прапор розташувння курсора миші в межах рамки лінійних розмірів креслення
     var mouseIsFrameDraft=false;
@@ -30,12 +32,18 @@ var CMain=function(){
         objDraft.onmousemove=function(ev){MoveOnDraft(ev);};
         
         //створити обробники подій для курсора миші в межах рамки лінійних розмірів креслення
-        objFrameDraft=document.getElementById("frameDraft");
-        objFrameDraft.onmouseover=function(ev){mouseIsFrameDraft=true;};
-        objFrameDraft.onmouseout=function(ev){mouseIsFrameDraft=false;};
+        ReCreateEventsForFrameDraft();
+        //отримати параметри позиціонування рамки лінійних розмірів креслення
+        //GetPosFrameDraft();
         
         //створти обробники подій для кнопок вибору режиму вставки полиць (вертикальна чи горизонтальна)
         self.CreateEventsForElements({onclick: "ClickBtnWorkShelf"}, ".rbtWorkShelf");               
+    };
+    
+    var ReCreateEventsForFrameDraft=function(){
+        objFrameDraft=document.getElementById("frameDraft");
+        objFrameDraft.onmouseover=function(ev){mouseIsFrameDraft=true;};
+        objFrameDraft.onmouseout=function(ev){mouseIsFrameDraft=false;};
     };
     
     //установка курсора у залежності від режиму роботи
@@ -114,26 +122,29 @@ var CMain=function(){
     };
     
     //додавання полиці
-    var addShelf=function(data){        
-        fd.addShelf({ //лінійні розміри передаються в px
-            type: action,
-            width: data.width, 
-            depth: data.depth,                        
-            start: {
-                x: data.x,
-                y: data.y
-            }
-        });                        
+    var addShelf=function(data){       
+        if (mouseIsFrameDraft){
+            fd.addShelf({ //лінійні розміри передаються в px
+                type: action,
+                width: data.width, 
+                depth: data.depth,                        
+                start: {
+                    x: data.x,
+                    y: data.y
+                }
+            }); 
+            
+            ReCreateEventsForFrameDraft();
+        }
     };
-    
+            
     //додавання вертикальної полиці
     var addVShelf=function(data){
         
-        data.width=300; //тут буде алгоритм обчислення
-        data.depth=100;
         
-        data.x-=parseInt(halfThickShelfPX);
-        data.y-=parseInt(data.width/2);
+        data.depth=100; //!!!!!!!!
+        
+        fd.CalcHVShelf(data);
         
         addShelf(data);
         
@@ -142,12 +153,10 @@ var CMain=function(){
     
     //додавання горизонтальної полиці
     var addHShelf=function(data){
+                
+        data.depth=100; //!!!!!!!!!!
         
-        data.width=300; //тут буде алгоритм обчислення
-        data.depth=100;
-        
-        data.x-=parseInt(data.width/2);
-        data.y-=parseInt(halfThickShelfPX);
+        fd.CalcWHShelf(data);
         
         addShelf(data);
                 
