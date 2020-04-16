@@ -222,8 +222,27 @@ var CFurnitureDesign=function(){
         var yt=posFrameDraft.y;
         var yb=yt+posFrameDraft.height;
         
-        //алгоритм уточнення yt, yb
-        //...
+        //алгоритм уточнення yt, yb    
+        var shelf={};
+        var X=0;
+        var W=0;
+        var Y=0;           
+        for (var key in shelfs){
+            shelf=shelfs[key].GetShelf();
+            console.log("shelf: ", shelf);
+            
+            if (shelf.type === "addHShelf"){
+                X=shelf.start.x;
+                Y=shelf.start.y;
+                W=X+shelf.width;                
+                if (data.x > X && data.x < W){
+                    if (Y > yt && Y < data.y)
+                        yt=Y+shelf.thick;
+                    if (Y < yb && Y > data.y)
+                        yb=Y;
+                }
+            }
+        }
         
         data.y=yt;
         data.width=yb-yt;         
@@ -237,7 +256,26 @@ var CFurnitureDesign=function(){
         var xr=xl+posFrameDraft.width;
         
         //алгоритм уточнення xl, xr
-        //...
+        var shelf={};
+        var X=0;
+        var Y=0;
+        var H=0;
+        for (var key in shelfs){
+            shelf=shelfs[key].GetShelf();
+            console.log("shelf: ", shelf);
+            
+            if (shelf.type === "addVShelf"){
+                X=shelf.start.x;
+                Y=shelf.start.y;
+                H=Y+shelf.width;
+                if (data.y > Y && data.y < H){
+                    if (X > xl && X < data.x)
+                        xl=X+shelf.thick;
+                    if (X < xr && X > data.x)
+                        xr=X;
+                }
+            }
+        }
         
         data.x=xl;
         data.width=xr-xl;        
