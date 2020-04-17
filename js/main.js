@@ -48,12 +48,17 @@ var CMain=function(){
     
     //установка курсора у залежності від режиму роботи
     var SetCursor=function(){        
-        var cursor="default";
-        if (action !== "" && mouseIsFrameDraft){
-            self.cursor=pathCursors+action+".cur";
-            cursor="url("+pathCursors+action+".cur), auto";            
-        }      
-        objDraft.style.cursor=cursor;
+        try{
+            var cursor="default";
+            if (action !== "" && action !=="moveShelf" && mouseIsFrameDraft ){
+                self.cursor=pathCursors+action+".cur";
+                cursor="url("+pathCursors+action+".cur), auto";            
+            }      
+            objDraft.style.cursor=cursor;
+        }catch (err){
+            console.log(err);
+        }
+    
     };
     
     //створити обробники подій events над елементами обраними за селектором selector_elements
@@ -80,7 +85,7 @@ var CMain=function(){
     };
     
     //клік в області креслення
-    var ClickOnDraft=function(ev){ console.log(ev);               
+    var ClickOnDraft=function(ev){ //console.log(ev);               
         var dataMouse={
             x     : ev.offsetX,
             y     : ev.offsetY,
@@ -95,14 +100,40 @@ var CMain=function(){
         //console.log(ev);
     };
     
-    //
-    var MoveOnDraft=function(ev){
-        if (fd.GetIsMoveShelf()){ //режим переміщення полиці
-            fd.OnMouseMoveShelf(ev);
-            objDraft.style.cursor="move";
+    //рух курсора миші в області креслення
+    var startMove=false;
+    var oldMouse={};
+    var MoveOnDraft=function(ev){                               
+        var idMoveShelf=fd.GetIdMoveShelf();
+        if (idMoveShelf && ev.buttons === 1){ //режим переміщення полиці
+            //fd.OnMouseMoveShelf(ev);
+            if (!startMove){ 
+                startMove=true;
+                oldMouse={
+                    x: ev.offsetX,
+                    y: ev.offsetY
+                };
+            }else{
+                var dx=ev.offsetX-oldMouse.x;
+                var dy=ev.offsetY-oldMouse.y;
+                
+                fd.MoveImgShelf(dx, dy);
+                
+                oldMouse={
+                    x: ev.offsetX,
+                    y: ev.offsetY
+                };
+            }                        
+            
+            //objDraft.style.cursor="move";
+            
+            //console.log("move shelf: ",fd.GetMoveShelf());
         }else{
-            SetCursor();
+            startMove=false;
+            SetCursor();            
         };
+        
+        console.log("startMove: ", startMove);        
     };
     
     //клік на одній з кнопок вибору режиму роботи з полицями
@@ -137,6 +168,10 @@ var CMain=function(){
             ReCreateEventsForFrameDraft();
         }
     };
+    
+    //переміщення полиці - заглушка
+    //реальне переміщення здійснюється на об*єкті полиці
+    var moveShelf=function(data){};
             
     //додавання вертикальної полиці
     var addVShelf=function(data){
@@ -148,7 +183,7 @@ var CMain=function(){
         
         addShelf(data);
         
-        console.log("add v shelf: ", data);
+        //console.log("add v shelf: ", data);
     };
     
     //додавання горизонтальної полиці
@@ -160,7 +195,7 @@ var CMain=function(){
         
         addShelf(data);
                 
-        console.log("add h shelf: ", data);
+        //console.log("add h shelf: ", data);
     };
     
     //видалення полиці - тут це просто заглушка 

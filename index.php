@@ -12,9 +12,11 @@
        /*cursor: url(cursors/addVShelf.cur), auto;*/
     }
     
+    /*
     [id^='id_shelf_']{
         cursor: pointer;
     }
+    */
     
     /*
     [id^='id_shelf_']:hover{
@@ -63,6 +65,7 @@
 <svg id="draft"></svg>
 <div id="panel">        
     <div class="groupButtons"> <!-- buttons -->
+        <span class="rbtWorkShelf" id="moveShelf">M</span>
         <span class="rbtWorkShelf" id="addHShelf">H</span>
         <span class="rbtWorkShelf" id="addVShelf">V</span>
         <span class="rbtWorkShelf" id="delShelf">D</span>

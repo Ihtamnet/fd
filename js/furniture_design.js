@@ -52,10 +52,12 @@ var CFurnitureDesign=function(){
     var frameDraft=null; //об*єкт обмежувальної рамки креслення - фактично лінійні розміри виробу
     
     //
-    var isMoveShelf=false; //прапор переміщення полиці
-    self.GetIsMoveShelf=function(){return isMoveShelf;};
+    var idMoveShelf=""; //id полиці, яка переміщується
+    self.GetIdMoveShelf=function(){return idMoveShelf;};
     var moveShelf=null; //об*єкт полиці, що переміщується
+    self.GetMoveShelf=function(){return moveShelf;};
     var oldMouse={x: -100, y: -100}; //попереднє положення курсора миші
+    var imgMoveShelf=null;
             
     //
     var __constructor=function(prm){        
@@ -124,7 +126,8 @@ var CFurnitureDesign=function(){
         shelfsViewsObjs=document.querySelectorAll("[id^='id_shelf_']"); //console.log(shelfsViewsObjs);
         var l=shelfsViewsObjs.length;
         for(var i=0; i<l; i++){            
-            shelfsViewsObjs[i].onmousemove=function(ev){ self.OnMouseMoveShelf(ev); };
+            shelfsViewsObjs[i].onmousemove=function(ev){ OnMouseMoveShelf(ev); };
+            shelfsViewsObjs[i].onmouseover=function(ev){ OnMouseOverShelf(ev); };
             shelfsViewsObjs[i].onmouseout=function(ev){ OnMouseOutShelf(ev); };
             shelfsViewsObjs[i].onclick=function(ev){ ClickShelf(ev); };
         };
@@ -142,68 +145,82 @@ var CFurnitureDesign=function(){
         shelfsViewsObjs[id].onclick=function(ev){ ClickShelf(ev); };
     };
     */
-    
-    //курсор миші на полиці
-    self.OnMouseMoveShelf=function(ev){                        
-        //рух миші по полиці при натисненій лівій клавіші не в режимы видалення полиці
-        //(в режимі видалення полиці не рухаються)
-        if (ev.buttons === 1 && main.GetAction() !== "delShelf"){ 
-            if (!isMoveShelf){
-                moveShelf=document.getElementById(ev.target.id);                
-                moveShelf.style.cursor="move";
-                isMoveShelf=true;
-                oldMouse={
-                    x: ev.offsetX,
-                    y: ev.offsetY
-                };
-            }else{                                                                
-                var dx=ev.offsetX-oldMouse.x;
-                var dy=ev.offsetY-oldMouse.y;
-                
-                var x=parseInt(moveShelf.getAttribute("x"))+dx;
-                var y=parseInt(moveShelf.getAttribute("y"))+dy;
-                
-                moveShelf.setAttribute("x", x);
-                moveShelf.setAttribute("y", y);
-                
-                oldMouse={
-                    x: ev.offsetX,
-                    y: ev.offsetY
-                };
-            }
-            
-            //shelfs[ev.target.id]
-            console.log("mouse on shelf: ", ev);
-        }else{
-            moveShelf=document.getElementById(ev.target.id);                        
-            if (main.GetAction() === "delShelf"){                    
-                moveShelf.style.cursor="url("+main.GetPathCursors()+"delShelf.cur), auto";                
-                moveShelf.style.fill="red";
-
-                console.log("regime deleting ... "+moveShelf.style.fill);
-            }else{
-                moveShelf.style.cursor="pointer";
-                moveShelf.style.fill="rgb(228, 228, 228)";
-            }                            
-            isMoveShelf=false;
+   
+    var StopMoveShelf=function(){         
+        if (idMoveShelf !== ""){
+            moveShelf={};
+            imgMoveShelf.style.cursor="pointer";
+            shelfs[idMoveShelf].SetStart(
+                parseInt(imgMoveShelf.getAttribute("x")),
+                parseInt(imgMoveShelf.getAttribute("y"))
+            );                
         }
         
-        //moveShelf.setAttribute("class", "fill_under_cursor");                
+        idMoveShelf=""; 
+    };
+    
+    var EventMouseOnShelf=function(ev){
+        imgMoveShelf=document.getElementById(ev.target.id);
+        var action=main.GetAction();
+        switch (action){
+            case "moveShelf": {
+                if (ev.buttons === 1){ 
+                    moveShelf=shelfs[ev.target.id].GetShelf();
+                    idMoveShelf=ev.target.id;
+                    imgMoveShelf.style.cursor="move";
+
+                    //console.log("idMoveShelf: ", idMoveShelf);
+                }else{                                                       
+                    StopMoveShelf();
+                }
+                imgMoveShelf.style.fill="rgb(228, 228, 228)"; 
+                
+                break
+            }        
+            case "delShelf":{
+                ;
+            }
+        }
+    };
+   
+    //курсор миші щойно попав на полицю
+    var OnMouseOverShelf=function(ev){ 
+        EventMouseOnShelf(ev);
+    };
+    
+    //курсор миші бігає по полиці
+    var OnMouseMoveShelf=function(ev){
+        EventMouseOnShelf(ev);
     };
     
     //курсор миші зліз з полиці
     var OnMouseOutShelf=function(ev){
-        var moveShelf=document.getElementById(ev.target.id);
-        moveShelf.style.fill="white";
+        /*
+        idMoveShelf="";
         
-        //moveShelf.setAttribute("class", "fill_standart");                
+        var imgShelf=document.getElementById(ev.target.id);
+        imgShelf.style.fill="white";
+        */
+       
+       imgMoveShelf.style.fill="white";
+        
+       //console.log("mouseOut idMoveShelf: ", idMoveShelf, imgMoveShelf);                             
     };
+    
+    //
+    self.MoveImgShelf=function(dx, dy){
+        var x=parseInt(imgMoveShelf.getAttribute("x"))+dx;
+        var y=parseInt(imgMoveShelf.getAttribute("y"))+dy;
+                
+        imgMoveShelf.setAttribute("x", x);
+        imgMoveShelf.setAttribute("y", y);
+    };        
     
     //клік на полиці
     var ClickShelf=function(ev){    
         
         //!!!!!!
-        console.log(ev.target.id, ev);
+        //console.log(ev.target.id, ev);
         
         ev.stopPropagation();
         
@@ -229,7 +246,7 @@ var CFurnitureDesign=function(){
         var Y=0;           
         for (var key in shelfs){
             shelf=shelfs[key].GetShelf();
-            console.log("shelf: ", shelf);
+            //console.log("shelf: ", shelf);
             
             if (shelf.type === "addHShelf"){
                 X=shelf.start.x;
@@ -262,7 +279,7 @@ var CFurnitureDesign=function(){
         var H=0;
         for (var key in shelfs){
             shelf=shelfs[key].GetShelf();
-            console.log("shelf: ", shelf);
+            //console.log("shelf: ", shelf);
             
             if (shelf.type === "addVShelf"){
                 X=shelf.start.x;

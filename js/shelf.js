@@ -47,6 +47,13 @@ var CShelf=function(prm){
         };
     };
     
+    self.SetStart=function(x, y){
+        start={
+            x: x,
+            y: y
+        };
+    };
+    
     //
     self.AddToDraft=function(prm){ 
         
