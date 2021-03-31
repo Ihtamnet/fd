@@ -80,6 +80,6 @@
 <script src="js/furniture_design.js?time=<?php echo time(); ?>"></script>
 
 <script>    
-    var fd=new CFurnitureDesign(); //design-controller 
+    var fd=new CFurnitureDesign(); //design-controller ???
     var main=new CMain; //main-controller
 </script>
